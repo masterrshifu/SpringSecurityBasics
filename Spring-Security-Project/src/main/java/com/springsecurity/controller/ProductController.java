@@ -1,7 +1,9 @@
 package com.springsecurity.controller;
 
+import com.springsecurity.dto.AuthRequest;
 import com.springsecurity.dto.Product;
 import com.springsecurity.entity.UserInfo;
+import com.springsecurity.service.JwtService;
 import com.springsecurity.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +17,9 @@ public class ProductController {
 
     @Autowired
     private ProductService service;
+
+    @Autowired
+    private JwtService jwtService;
 
 
     @PostMapping("/new")
@@ -37,5 +42,10 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public Product getProductById(@PathVariable int id) {
         return service.getProduct(id);
+    }
+
+    @PostMapping("/authenticate")
+    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        return jwtService.generateToken(authRequest.getUsername());
     }
 }
